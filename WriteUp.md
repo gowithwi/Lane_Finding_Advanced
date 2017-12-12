@@ -46,7 +46,9 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+I did three things.
+
+First, I set up the sobel x to detect the gradient. Second, I tuned the saturation threshold. Third, I used the "OR" function to combine the two so that I got both lines far away (saturation is more reliable) and nearby (sobel x performs better).
 
 ![alt text][image3]
 
@@ -74,9 +76,7 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did three things.
-
-First, I set up the sobel x to detect the gradient. Second, I tuned the saturation threshold. Third, I used the "OR" function to combine the two so that I got both lines far away (saturation is more reliable) and nearby (sobel x performs better).
+Then I identified the lane-line pixles by fitting the curve.
 
 ![alt text][image5]
 
