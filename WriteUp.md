@@ -119,6 +119,9 @@ Then I use the video package to do the frames one by one, as below.
 ```python
 clip = input_vidoe.fl_image(MyGame) 
 ```
+
+![alt text][video1]
+
 ---
 
 ### Discussion
