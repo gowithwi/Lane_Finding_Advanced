@@ -22,7 +22,7 @@ The goals / steps of this project are the following:
 [image4]: ./image4.png  "Warp the image"
 [image5]: ./image5.png  "Fit Visual"
 [image6]: ./image6.png  "Output"
-[video1]: ./project_video.mp4 "Video"
+[video1]: ./project_video_lanes.mp4 "Video"
 
 
 ### STEP1. Camera Calibration
@@ -74,7 +74,9 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+Then I did three things.
+
+First, I set up the sobel x to detect the gradient. Second, I tuned the saturation threshold. Third, I used the "OR" function to combine the two so that I got both lines far away (saturation is more reliable) and nearby (sobel x performs better).
 
 ![alt text][image5]
 
@@ -102,8 +104,21 @@ I tested a few pictures and they worked pretty well. I don't have the code to ru
 
 I don't know how to do it in video form, but my work should prove that I am competent in the computer vision ideas.
 
-Some sample code for video streaming are welcome. Thanks a lot!
+Please see video clip of the work. 
 
+To make it work, I re-organized the program into Video_generator.ipynb. The algorithm is not changed. But the funciton is packaged into the function:
+
+```python
+def MyGame(img0):
+...
+return image_5
+```
+
+Then I use the video package to do the frames one by one, as below.
+
+```python
+clip = input_vidoe.fl_image(MyGame) 
+```
 ---
 
 ### Discussion
