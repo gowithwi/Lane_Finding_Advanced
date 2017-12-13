@@ -76,20 +76,48 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I identified the lane-line pixles by fitting the curve.
+The lane-line pixels were identified within the bird-view image, or the so-called warped image.
+
+Then I identified the lane-line pixles using a moving window sliding to determine the max signal for left lane and right lane. To avoid  minpix pixels, I recentered next window on their mean position if there is an unstability.
+
+```python
+        if len(good_left_inds) > minpix:
+            leftx_current = np.int(np.mean(nonzerox[good_left_inds]))
+        if len(good_right_inds) > minpix:        
+            rightx_current = np.int(np.mean(nonzerox[good_right_inds]))
+
+```
 
 ![alt text][image5]
 
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-For both side lines, it reports the curvature to be: 595.148713873 m and 575.111358463 m, respectively.
+For both side lines, it reports the curvature to be: 595.148713873 m and 575.111358463 m, respectively. I need to do two things then. 
 
+First, I solve for the curvature by applying the fitting method as below.
+```python
+   left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
+    right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
+ 
+```
+Second, I try to extract the car position relative to lane, by compare the position of camera to position of the lane center.
+```python
+    camera_position = image.shape[0]/2*xm_per_pix
+    left = leftx*xm_per_pix
+    right = rightx*xm_per_pix
+    lane_center = (right[700] + left[700])/2
+    center_offset_pixels = (camera_position - lane_center)/2
+```
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through #
-
+I implemented this step in cell 6 within the jupyter notebook "Video_generator". It is composed of two steps, un-warp the identified area, and projected onto top of the original image.
+```python
+    newwarp = cv2.warpPerspective(color_warp, Minv, (image.shape[1], image.shape[0])) 
+    image_5 = cv2.addWeighted(image, 1, newwarp, 0.3, 0)
+ 
+```
 Here is an example of my result on a test image:
 
 ![alt text][image6]
