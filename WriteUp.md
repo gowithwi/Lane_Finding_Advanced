@@ -50,6 +50,20 @@ I did three things.
 
 First, I set up the sobel x to detect the gradient. Second, I tuned the saturation threshold. Third, I used the "OR" function to combine the two so that I got both lines far away (saturation is more reliable) and nearby (sobel x performs better).
 
+However, as discussed in the lart part of this report, it does not work well for shadows, where the x gradient is strong. To address that issue, I changed to the magnitude of gradient, which would not pick up the noise signal from the x gradient that comes from tree shadows, or scratches/ marks in the paved road.
+
+Below is the comparison codes between first and second methods.
+
+(first method-- sobel x, low stability against tree shadow)
+```python
+    combined[((sxbinary == 1) | (s_binary == 1))] = 1
+```
+(second method-- gradient magnitude, low stability against tree shadow)
+
+```python
+    combined[((mag_binary == 1) | (s_binary == 1))] = 1
+```
+And the final images after process is shown below.
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
