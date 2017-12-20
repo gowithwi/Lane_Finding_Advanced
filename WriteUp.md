@@ -117,11 +117,29 @@ First, I solve for the curvature by applying the fitting method as below.
 ```
 Second, I try to extract the car position relative to lane, by compare the position of camera to position of the lane center.
 ```python
-    camera_position = image.shape[0]/2*xm_per_pix
+    camera_position = image.shape[1]/2*xm_per_pix
     left = leftx*xm_per_pix
     right = rightx*xm_per_pix
     lane_center = (right[700] + left[700])/2
     center_offset_pixels = (camera_position - lane_center)/2
+```
+(last submission) I add a channel to detect the difference between the current lane picking and last one. If the delta is too large, I would assume the current one is wrong and keep the last one. Here is the part of code for that purpose.
+
+```python
+    left_dd = np.amax(abs(left_fitx - left_fitx_b))
+
+    right_dd = np.amax(abs(right_fitx - right_fitx_b))
+
+    dd_obs = np.amax((left_dd, right_dd))
+
+    if left_dd > dd_spec:
+        left_fitx = left_fitx_b
+    if right_dd > dd_spec:
+        right_fitx = right_fitx_b
+
+    left_fitx_b = left_fitx
+    right_fitx_b = right_fitx
+
 ```
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
@@ -130,7 +148,6 @@ I implemented this step in cell 6 within the jupyter notebook "Video_generator".
 ```python
     newwarp = cv2.warpPerspective(color_warp, Minv, (image.shape[1], image.shape[0])) 
     image_5 = cv2.addWeighted(image, 1, newwarp, 0.3, 0)
- 
 ```
 Here is an example of my result on a test image:
 
@@ -176,4 +193,10 @@ First, I realized the combination of sobel x and saturation works pretty well. B
 ```
 
 Second, if I were to pursuing this project further, I'd spend more time in dealing with shadows, which is challenging to real drivers as well. The shadow with low saturation should be able to be distinguished, assuming we deal with sobel smartly. I'd like to run different combinations in the first point.
+
+(last submission) Finally, I realized the lane-finding failed at the part where there is shade-- the root cause is the strong saturation. Hence, I changed the thredshold for the saturation as below by narrowing the window, so the true lane will still be picked up while shades are filtered.
+```python
+    pipeline(img, s_thresh=(150, 200), sx_thresh=(35, 100))
+```
+
 
